@@ -6,6 +6,23 @@ define append_if_no_such_line($file, $line, $refreshonly = 'false') {
    }
 }
 
+class base-packages {
+ include apt
+  
+  exec { "apt-get update":
+    command => "/usr/bin/apt-get update",
+  } ->
+  package { 'python-pycurl':
+    ensure => present,
+  } ->
+  package { 'unattended-upgrades':
+    ensure => present,
+  } -> 
+  package { 'python-software-properties': 
+    ensure => present,
+  }
+}
+
 class repositories {
   include apt
   apt::ppa { "ppa:webupd8team/java": }
@@ -45,6 +62,7 @@ class must-have {
   }
 }
 
+include base-packages
 include repositories
 include must-have
 
